@@ -36,4 +36,28 @@ class CreateProductTest extends Specification {
         newProduct != null
         parametros == newProduct.properties.findAll{ it.key != "class"}
     }
+
+    Should "save a created product in file"(){
+        setup: "Create a file and persist a product"
+            def poorDatabase = new File("/home/jresendiz/Desktop/database.csv")
+            poorDatabase.createNewFile();
+            def header = ["uniqueId","name", "quantity", "creationDate", "storeName"]
+            poorDatabase.write(header.join(",")+"\n")
+            def product = new Product()
+            product.with {
+                uniqueId ="1"
+                name = "Refregco del Ale"
+                quantity = 2
+                creationDate = new Date()
+                storeName = "La tienda del Ale en Coatepec"
+            }
+        when: "The file is open, append the product"
+            poorDatabase << (product.getCSVString(header) + "\n")
+        then: "Verify the file content"
+            def savedProduct = poorDatabase.readLines()[1]
+            assert savedProduct == product.getCSVString(header)
+        cleanup: "Delete the created file"
+            println poorDatabase.text
+            poorDatabase.delete()
+    }
 }
