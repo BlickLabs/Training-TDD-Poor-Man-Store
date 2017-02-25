@@ -1,3 +1,4 @@
+import mx.blick.training.store.IO.FileManagement
 import mx.blick.training.store.beans.Product
 import spock.lang.Specification
 import java.lang.Void as Should
@@ -39,10 +40,9 @@ class CreateProductTest extends Specification {
 
     Should "save a created product in file"(){
         setup: "Create a file and persist a product"
-            def poorDatabase = new File("/home/jresendiz/Desktop/database.csv")
-            poorDatabase.createNewFile();
+            FileManagement fileManagement = FileManagement.getInstance()
+            def poorDatabase = fileManagement.createDatabaseFile("./database.csv")
             def header = ["uniqueId","name", "quantity", "creationDate", "storeName"]
-            poorDatabase.write(header.join(",")+"\n")
             def product = new Product()
             product.with {
                 uniqueId ="1"
@@ -54,6 +54,7 @@ class CreateProductTest extends Specification {
         when: "The file is open, append the product"
             poorDatabase << (product.getCSVString(header) + "\n")
         then: "Verify the file content"
+            println poorDatabase.readLines()
             def savedProduct = poorDatabase.readLines()[1]
             assert savedProduct == product.getCSVString(header)
         cleanup: "Delete the created file"
