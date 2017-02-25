@@ -7,13 +7,6 @@ import java.lang.Void as Should
  * Created by jresendiz on 25/02/17.
  */
 class CreateProductTest extends Specification {
-    def setup() {
-        println "Before Class"
-    }
-
-    def cleanup() {
-        println "after Class"
-    }
 
     Should "create a product"() {
         setup: // lo que necesito para crear un producto
@@ -21,7 +14,7 @@ class CreateProductTest extends Specification {
                 uniqueId:"1",
                 name: "Refregco del Ale",
                 quantity: 2,
-                creationDate: new Date(),
+                creationDate: new Date().toString(),
                 storeName: "La tienda del Ale en Coatepec"
         ]
         when: // Accion (carnita/core)
@@ -54,11 +47,9 @@ class CreateProductTest extends Specification {
         when: "The file is open, append the product"
             poorDatabase << (product.getCSVString(header) + "\n")
         then: "Verify the file content"
-            println poorDatabase.readLines()
             def savedProduct = poorDatabase.readLines()[1]
             assert savedProduct == product.getCSVString(header)
         cleanup: "Delete the created file"
-            println poorDatabase.text
             poorDatabase.delete()
     }
 }
