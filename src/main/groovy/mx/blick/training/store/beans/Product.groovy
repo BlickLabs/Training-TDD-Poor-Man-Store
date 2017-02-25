@@ -13,7 +13,7 @@ class Product {
     String name
     Integer quantity
     String storeName
-    Date creationDate
+    String creationDate
 
     String getCSVString(List header) { //uniqueId, algo
         List columns = []
@@ -25,5 +25,8 @@ class Product {
             }
         }
         return columns.join(", ")
+    }
+    String getCSVLine(List header) {
+        return this.getCSVString(header) +"\n"
     }
 }
